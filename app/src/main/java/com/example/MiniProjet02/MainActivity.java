@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -29,11 +30,11 @@ public class MainActivity extends AppCompatActivity {
         String url = "https://dummyjson.com/quotes/random";
 
 // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url,
                 response -> {
                     try {
-                        JSONObject jsonObject =  new JSONObject(response);
-                        quotes.setText(jsonObject.getString("quote"));
+                        quotes.setText(response.getString("quote"));
+                        author.setText(response.getString("author"));
 
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
@@ -45,10 +46,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Set the tag on the request.
-        stringRequest.setTag("TAG");
+        jsonObjectRequest.setTag("TAG");
 
         // Add the request to the RequestQueue.
-        queue.add(stringRequest);
+        queue.add(jsonObjectRequest);
 
 
     }
