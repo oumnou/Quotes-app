@@ -2,55 +2,88 @@ package com.example.MiniProjet02;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.TextView;
-import com.android.volley.Request;
+import android.widget.Toast;
+import android.widget.ToggleButton;
+
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-
 import org.json.JSONException;
-import org.json.JSONObject;
 
 
 public class MainActivity extends AppCompatActivity {
     Button btnShow;
-    TextView quotes, author;
+    TextView quotesTv, authorTv;
+    ToggleButton pinUnpin;
+    SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        quotes = findViewById(R.id.tvQuotes);
-        author = findViewById(R.id.tvAuthor);
+        pinUnpin = findViewById(R.id.pinUnpin);
+        quotesTv = findViewById(R.id.tvQuotes);
+        authorTv = findViewById(R.id.tvAuthor);
+        sharedPreferences = getSharedPreferences("pinned-quote",MODE_PRIVATE);
 
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://dummyjson.com/quotes/random";
+        String quote = sharedPreferences.getString("quote",null);
 
-// Request a string response from the provided URL.
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url,
-                response -> {
-                    try {
-                        quotes.setText(response.getString("quote"));
-                        author.setText(response.getString("author"));
+        if (quote == null) {
+            getRandomQuote();
+        }else {
+            String author = sharedPreferences.getString("author",null);
+            quotesTv.setText(quote);
+            authorTv.setText(author);
+            pinUnpin.setChecked(true);
 
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
+        }
 
-                    // Display the first 500 characters of the response string.
-                }, error -> quotes.setText("That didn't work!"));
+        pinUnpin.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
 
+            if (isChecked){
+                editor.putString("quote",quotesTv.getText().toString());
+                editor.putString("author",quotesTv.getText().toString());
 
+            }
+            else {
+                editor.putString("quote",null);
+                editor.putString("author",null);
 
-        // Set the tag on the request.
-        jsonObjectRequest.setTag("TAG");
+            }
+            editor.commit();
 
-        // Add the request to the RequestQueue.
-        queue.add(jsonObjectRequest);
+        });
 
 
     }
+
+    private void getRandomQuote() {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "https://dummyjson.com/quotes/random";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url,
+                response -> {
+                    try {
+                        quotesTv.setText(response.getString("quote"));
+                        authorTv.setText(response.getString("author"));
+
+                    }
+                    catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                }, error -> quotesTv.setText("That didn't work!"));
+
+
+        // Add the request to the RequestQueue.
+        queue.add(jsonObjectRequest);
+    }
+
+
 }
