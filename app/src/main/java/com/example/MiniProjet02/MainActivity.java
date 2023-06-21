@@ -4,8 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -21,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
     TextView quotesTv, authorTv;
     ToggleButton pinUnpin;
     SharedPreferences sharedPreferences;
+    ImageView favImage ;
+    boolean isFavorite = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
         pinUnpin = findViewById(R.id.pinUnpin);
         quotesTv = findViewById(R.id.tvQuotes);
         authorTv = findViewById(R.id.tvAuthor);
+        favImage = findViewById(R.id.favQuote);
+
         sharedPreferences = getSharedPreferences("pinned-quote",MODE_PRIVATE);
 
         String quote = sharedPreferences.getString("quote",null);
@@ -42,6 +48,22 @@ public class MainActivity extends AppCompatActivity {
             pinUnpin.setChecked(true);
 
         }
+
+        favImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isFavorite){
+                 favImage.setImageResource(R.drawable.dislike);
+
+            }else {
+                    favImage.setImageResource(R.drawable.like);
+
+
+                }
+                isFavorite = !isFavorite;
+            }
+        });
+
 
         pinUnpin.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = sharedPreferences.edit();
