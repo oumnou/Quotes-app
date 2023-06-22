@@ -36,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
         favImage = findViewById(R.id.favQuote);
 
         sharedPreferences = getSharedPreferences("pinned-quote",MODE_PRIVATE);
+        FavoriteQuotesDbOpenHelper favoriteQuotesDbOpenHelper = new FavoriteQuotesDbOpenHelper(this);
+        favoriteQuotesDbOpenHelper.add("test","testtt ",14);
+        favoriteQuotesDbOpenHelper.getAll();
 
         String quote = sharedPreferences.getString("quote",null);
 
