@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -16,6 +17,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
+
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -36,9 +39,19 @@ public class MainActivity extends AppCompatActivity {
         favImage = findViewById(R.id.favQuote);
 
         sharedPreferences = getSharedPreferences("pinned-quote",MODE_PRIVATE);
-        FavoriteQuotesDbOpenHelper favoriteQuotesDbOpenHelper = new FavoriteQuotesDbOpenHelper(this);
-        favoriteQuotesDbOpenHelper.add("test","testtt ",14);
-        favoriteQuotesDbOpenHelper.getAll();
+
+        FavoriteQuotesDbOpenHelper db = new FavoriteQuotesDbOpenHelper(this);
+        db.add(new Quote(1,"1","1"));
+        db.add(new Quote(2,"2","2"));
+        db.add(new Quote(3,"3","3"));
+
+        db.delete(2);
+
+        ArrayList<Quote> listOfQuotes = db.getAll();
+        for (Quote quot : listOfQuotes){
+            Log.d("quote",quot.toString());
+
+        }
 
         String quote = sharedPreferences.getString("quote",null);
 
@@ -52,19 +65,16 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        favImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isFavorite){
-                 favImage.setImageResource(R.drawable.dislike);
+        favImage.setOnClickListener(v -> {
+            if (isFavorite){
+             favImage.setImageResource(R.drawable.dislike);
 
-            }else {
-                    favImage.setImageResource(R.drawable.like);
+        }else {
+                favImage.setImageResource(R.drawable.like);
 
 
-                }
-                isFavorite = !isFavorite;
             }
+            isFavorite = !isFavorite;
         });
 
 

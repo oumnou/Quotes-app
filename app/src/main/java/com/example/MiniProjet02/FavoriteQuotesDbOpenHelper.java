@@ -5,10 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class FavoriteQuotesDbOpenHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
@@ -38,28 +36,31 @@ public class FavoriteQuotesDbOpenHelper extends SQLiteOpenHelper {
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        //db.execSQL(SQL_DELETE_ENTRIES);
         onCreate(db);
     }
 
-    public void add(String quotes,String author,int id ){
+    private void add(int id,String quote,String author ){
         // Gets the data repository in write mode
         SQLiteDatabase db = FavoriteQuotesDbOpenHelper.this.getWritableDatabase();
 
 // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(QuotesContract.FavoriteQuotes.COLUMN_NAME_ID, id);
-        values.put(QuotesContract.FavoriteQuotes.COLUMN_NAME_QUOTE, quotes);
+        values.put(QuotesContract.FavoriteQuotes.COLUMN_NAME_QUOTE, quote);
         values.put(QuotesContract.FavoriteQuotes.COLUMN_NAME_AUTHOR, author);
 
         db.insert(QuotesContract.FavoriteQuotes.TABLE_NAME, null, values);
     }
 
-    public void getAll(){
+    public void add(Quote quote){
+        add(quote.getId(),quote.getQuote(),quote.getAuthor());
+    }
+
+    public ArrayList<Quote> getAll(){
+
+        ArrayList listOfQuotes = new ArrayList(){};
         SQLiteDatabase db = FavoriteQuotesDbOpenHelper.this.getReadableDatabase();
 
-// Define a projection that specifies which columns from the database
-// you will actually use after this query.
         String[] projection = {
                 QuotesContract.FavoriteQuotes.COLUMN_NAME_ID,
                 QuotesContract.FavoriteQuotes.COLUMN_NAME_QUOTE,
@@ -68,23 +69,35 @@ public class FavoriteQuotesDbOpenHelper extends SQLiteOpenHelper {
         };
 
         Cursor cursor = db.query(
-                QuotesContract.FavoriteQuotes.TABLE_NAME,   // The table to query
-                projection,             // The array of columns to return (pass null to get all)
-                null,              // The columns for the WHERE clause
-                null,          // The values for the WHERE clause
-                null,                   // don't group the rows
-                null,                   // don't filter by row groups
-                null               // The sort order
+                QuotesContract.FavoriteQuotes.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                null
         );
-        List itemIds = new ArrayList<>();
         while(cursor.moveToNext()) {
-            int itemId = cursor.getInt(
-                    cursor.getColumnIndexOrThrow(QuotesContract.FavoriteQuotes.COLUMN_NAME_ID));
-            itemIds.add(itemId);
-            Log.d("test", String.valueOf(itemId));
+            int itemId = cursor.getInt(cursor.getColumnIndexOrThrow(QuotesContract.FavoriteQuotes.COLUMN_NAME_ID));
+            String itemQuote = cursor.getString(cursor.getColumnIndexOrThrow(QuotesContract.FavoriteQuotes.COLUMN_NAME_ID));
+            String itemAuthor = cursor.getString(cursor.getColumnIndexOrThrow(QuotesContract.FavoriteQuotes.COLUMN_NAME_ID));
+
+            listOfQuotes.add(new Quote(itemId,itemQuote,itemAuthor));
 
         }
         cursor.close();
+        return listOfQuotes;
+    }
+
+
+    public void delete(int id){
+        SQLiteDatabase db = FavoriteQuotesDbOpenHelper.this.getReadableDatabase();
+
+        String selection =  QuotesContract.FavoriteQuotes.COLUMN_NAME_ID + " LIKE ?";
+
+        String[] selectionArgs = {String.valueOf(id)};
+        int deletedRows = db.delete(QuotesContract.FavoriteQuotes.TABLE_NAME, selection, selectionArgs);
+
     }
 
 }
