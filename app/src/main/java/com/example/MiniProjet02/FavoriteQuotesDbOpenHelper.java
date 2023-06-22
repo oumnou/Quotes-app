@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -15,8 +16,8 @@ public class FavoriteQuotesDbOpenHelper extends SQLiteOpenHelper {
 
             String.format("CREATE TABLE %s ("+
                     "%s INTEGER PRIMARY KEY, " +
-                    "%S TEXT," +
-                    "%S TEXT )" ,
+                    "%s TEXT," +
+                    "%s TEXT )" ,
                     QuotesContract.FavoriteQuotes.TABLE_NAME,
                     QuotesContract.FavoriteQuotes.COLUMN_NAME_ID,
                     QuotesContract.FavoriteQuotes.COLUMN_NAME_QUOTE,
@@ -39,7 +40,7 @@ public class FavoriteQuotesDbOpenHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    private void add(int id,String quote,String author ){
+    private void add(int id, String quote, String author ){
         // Gets the data repository in write mode
         SQLiteDatabase db = FavoriteQuotesDbOpenHelper.this.getWritableDatabase();
 
@@ -79,10 +80,11 @@ public class FavoriteQuotesDbOpenHelper extends SQLiteOpenHelper {
         );
         while(cursor.moveToNext()) {
             int itemId = cursor.getInt(cursor.getColumnIndexOrThrow(QuotesContract.FavoriteQuotes.COLUMN_NAME_ID));
-            String itemQuote = cursor.getString(cursor.getColumnIndexOrThrow(QuotesContract.FavoriteQuotes.COLUMN_NAME_ID));
-            String itemAuthor = cursor.getString(cursor.getColumnIndexOrThrow(QuotesContract.FavoriteQuotes.COLUMN_NAME_ID));
+            String itemQuote = cursor.getString(cursor.getColumnIndexOrThrow(QuotesContract.FavoriteQuotes.COLUMN_NAME_QUOTE));
+            String itemAuthor = cursor.getString(cursor.getColumnIndexOrThrow(QuotesContract.FavoriteQuotes.COLUMN_NAME_AUTHOR));
 
             listOfQuotes.add(new Quote(itemId,itemQuote,itemAuthor));
+            Log.d("test",new Quote(itemId,itemQuote,itemAuthor).toString());
 
         }
         cursor.close();

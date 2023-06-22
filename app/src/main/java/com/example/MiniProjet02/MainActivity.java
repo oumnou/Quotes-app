@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     ImageView favImage ;
     boolean isFavorite = false;
+    int id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,11 +42,8 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("pinned-quote",MODE_PRIVATE);
 
         FavoriteQuotesDbOpenHelper db = new FavoriteQuotesDbOpenHelper(this);
-        db.add(new Quote(1,"1","1"));
-        db.add(new Quote(2,"2","2"));
-        db.add(new Quote(3,"3","3"));
 
-        db.delete(2);
+
 
         ArrayList<Quote> listOfQuotes = db.getAll();
         for (Quote quot : listOfQuotes){
@@ -68,9 +66,14 @@ public class MainActivity extends AppCompatActivity {
         favImage.setOnClickListener(v -> {
             if (isFavorite){
              favImage.setImageResource(R.drawable.dislike);
+             db.delete(id);
+             db.getAll();
+
 
         }else {
                 favImage.setImageResource(R.drawable.like);
+                db.add(new Quote( id, (String) quotesTv.getText(),(String) authorTv.getText()));
+                db.getAll();
 
 
             }
@@ -107,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         quotesTv.setText(response.getString("quote"));
                         authorTv.setText(response.getString("author"));
+                        id = response.getInt("id");
+
 
                     }
                     catch (JSONException e) {
