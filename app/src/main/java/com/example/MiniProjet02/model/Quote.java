@@ -49,17 +49,6 @@ public class Quote {
         return String.format("%d  %s  %s", id, quote, author);
     }
 
-    public Spannable infos() {
-        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(quote);
-        Spannable spannable = new SpannableString(author);
-
-        spannable.setSpan(
-                new ForegroundColorSpan(Color.GREEN),
-                0,
-                spannable.length(),
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return spannable;
-    }
 
 
 }
