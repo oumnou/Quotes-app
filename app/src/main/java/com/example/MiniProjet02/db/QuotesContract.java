@@ -1,4 +1,4 @@
-package com.example.MiniProjet02;
+package com.example.MiniProjet02.db;
 
 import android.provider.BaseColumns;
 
