@@ -2,20 +2,22 @@ package com.example.MiniProjet02;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.MiniProjet02.db.FavoriteQuotesDbOpenHelper;
+import com.example.MiniProjet02.model.Quote;
+
 import org.json.JSONException;
 
 import java.util.ArrayList;
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         quotesTv = findViewById(R.id.tvQuotes);
         authorTv = findViewById(R.id.tvAuthor);
         favImage = findViewById(R.id.favQuote);
+        btnShow = findViewById(R.id.showfav);
 
         sharedPreferences = getSharedPreferences("pinned-quote",MODE_PRIVATE);
 
@@ -98,6 +101,11 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+        btnShow.setOnClickListener(v ->{
+
+                Intent intent = new Intent(this, FavQuotesMain.class);
+                startActivity(intent);
+        });
 
     }
 
