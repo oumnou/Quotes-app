@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,7 +29,7 @@ public class FavQuotesMain extends AppCompatActivity {
 
         FavoriteQuotesAdapter adapter = new FavoriteQuotesAdapter(listOfQuotes);
         rcvQuotesList.setAdapter(adapter);
-        rcvQuotesList.setLayoutManager(new LinearLayoutManager(this));
+        rcvQuotesList.setLayoutManager(new GridLayoutManager(this,2));
 
     }
 }
